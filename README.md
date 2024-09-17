@@ -12,7 +12,7 @@ If vulnerabilities are found by `yarn npm audit`, Action triggered by PR creates
 
 If vulnerabilities are found by `yarn npm audit`, Action triggered by push, schedule creates the following GitHub Issue.
 
-![image](https://github.com/basaldev/yarn-npm-audit-action/blob/main/issue.png)
+![image](https://github.com/Remedy-Robotics/yarn-npm-audit-action/blob/main/issue.png)
 
 ## Usage
 
@@ -63,7 +63,7 @@ jobs:
       - uses: actions/checkout@v3
       - name: install dependencies
         run: yarn install
-      - uses: basaldev/yarn-npm-audit-action@v2
+      - uses: Remedy-Robotics/yarn-npm-audit-action@v2
         with:
           severity_level: moderate
           github_token: ${{ secrets.MY_GITHUB_ACCESS_TOKEN }}
