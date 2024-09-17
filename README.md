@@ -67,7 +67,7 @@ jobs:
         with:
           severity_level: moderate
           github_token: ${{ secrets.MY_GITHUB_ACCESS_TOKEN }}
-          issue_assignees: basal-luke
+          issue_assignees: campbell-remedy
           issue_labels: vulnerability,test
           dedupe_issues: true
           recursive_flag: true
