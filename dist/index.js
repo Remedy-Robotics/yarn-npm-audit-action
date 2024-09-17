@@ -186,6 +186,16 @@ const audit_1 = __nccwpck_require__(9241);
 const issue = __importStar(__nccwpck_require__(6018));
 const pr = __importStar(__nccwpck_require__(515));
 const workdir = __importStar(__nccwpck_require__(3039));
+const o = new rest_1.Octokit();
+function findExistingComment(octokit, prefix, prNumber) {
+    return __awaiter(this, void 0, void 0, function* () {
+        return octokit.rest.issues
+            .listComments(Object.assign(Object.assign({}, github.context.repo), { issue_number: prNumber }))
+            .then(comments => {
+            return comments.data.find(c => { var _a, _b; return ((_a = c.user) === null || _a === void 0 ? void 0 : _a.login) === 'github-actions[bot]' && ((_b = c.body) === null || _b === void 0 ? void 0 : _b.startsWith(prefix)); });
+        });
+    });
+}
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -220,6 +230,7 @@ function run() {
             audit.run(severityLevel, productionFlag, jsonFlag, recursiveFlag);
             core.info(audit.stdout);
             core.setOutput('npm_audit', audit.stdout);
+            const commentPrefix = '## npm audit\n\n';
             if (audit.foundVulnerability()) {
                 // vulnerabilities are found
                 // get GitHub information
@@ -234,7 +245,17 @@ function run() {
                         throw new Error('Invalid input: create_pr_comments');
                     }
                     if (createPRComments === 'true') {
-                        yield pr.createComment(octokit, github.context.repo.owner, github.context.repo.repo, ctx.event.number, audit.strippedStdout());
+                        const comment = yield findExistingComment(octokit, commentPrefix, ctx.event.number);
+                        const commentContent = commentPrefix + audit.strippedStdout();
+                        // Find a previous comment, and replace it if it exists
+                        if (comment) {
+                            core.debug(`Updating the comment ${comment.id}`);
+                            yield octokit.rest.issues.updateComment(Object.assign(Object.assign({}, github.context.repo), { comment_id: comment.id, body: commentContent }));
+                        }
+                        else {
+                            core.debug('Creating a new comment');
+                            yield pr.createComment(octokit, github.context.repo.owner, github.context.repo.repo, ctx.event.number, commentContent);
+                        }
                     }
                     core.setFailed('This repo has some vulnerabilities');
                     return;
@@ -264,6 +285,29 @@ function run() {
                         core.debug(`#${createdIssue.number}`);
                     }
                     core.setFailed('This repo has some vulnerabilities');
+                }
+            }
+            else {
+                // get GitHub information
+                const ctx = JSON.parse(core.getInput('github_context'));
+                if (ctx.event_name === 'pull_request') {
+                    const createPRComments = core.getInput('create_pr_comments');
+                    if (!['true', 'false'].includes(createPRComments)) {
+                        throw new Error('Invalid input: create_pr_comments');
+                    }
+                    if (createPRComments === 'true') {
+                        const token = core.getInput('github_token', { required: true });
+                        const octokit = new rest_1.Octokit({
+                            auth: token
+                        });
+                        const comment = yield findExistingComment(octokit, commentPrefix, ctx.event.number);
+                        if (comment) {
+                            // Edit the comment to remove the audit results
+                            const commentContent = commentPrefix + 'No vulnerabilities found.';
+                            yield octokit.rest.issues.updateComment(Object.assign(Object.assign({}, github.context.repo), { comment_id: comment.id, body: commentContent }));
+                            core.debug(`Clearing the comment ${comment.id}`);
+                        }
+                    }
                 }
             }
         }
