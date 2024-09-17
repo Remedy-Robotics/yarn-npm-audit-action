@@ -1,6 +1,6 @@
 name: 'yarn npm audit action'
 description: 'run yarn npm audit'
-author: 'basal-luke <luke@basal.dev>'
+author: 'campbell-remedy <campbell@remedyrobotics.com>'
 inputs:
   severity_level:
     description: 'The value of `--severity` flag'
@@ -54,7 +54,7 @@ outputs:
   npm_audit:
     description: 'The output of the npm audit report in a text format'
 runs:
-  using: 'node16'
+  using: 'node22'
   main: 'dist/index.js'
 branding:
   icon: 'search'

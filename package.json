@@ -1,6 +1,6 @@
 {
-  "name": "@basaldev/yarn-npm-audit-action",
-  "version": "2.2.0",
+  "name": "@Remedy-Robotics/yarn-npm-audit-action",
+  "version": "2.4.4.1",
   "private": true,
   "description": "GitHub Action to run `yarn npm audit`",
   "main": "lib/main.js",

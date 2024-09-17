@@ -1,7 +1,5 @@
 # yarn npm audit action
 
-[![Coverage Status](https://coveralls.io/repos/github/basaldev/yarn-npm-audit-action/badge.svg?branch=main)](https://coveralls.io/github/basaldev/yarn-npm-audit-action?branch=main)
-
 GitHub Action to run `yarn npm audit`
 
 ## Feature
