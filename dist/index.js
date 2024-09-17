@@ -23,7 +23,7 @@ class Audit {
         try {
             const auditOptions = ['audit', '--severity', severityLevel];
             const isWindowsEnvironment = process.platform == 'win32';
-            const cmd = isWindowsEnvironment ? 'yarn npm.cmd' : 'yarn npm';
+            const cmd = isWindowsEnvironment ? 'npm.cmd' : 'npm';
             if (productionFlag === 'true') {
                 auditOptions.push('--environment=production');
             }
@@ -33,7 +33,7 @@ class Audit {
             if (resursiveFlag === 'true') {
                 auditOptions.push('--recursive');
             }
-            const result = (0, child_process_1.spawnSync)(cmd, auditOptions, {
+            const result = (0, child_process_1.spawnSync)('yarn', [cmd, ...auditOptions], {
                 encoding: 'utf-8',
                 maxBuffer: SPAWN_PROCESS_BUFFER_SIZE
             });

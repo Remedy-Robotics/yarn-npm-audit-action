@@ -17,7 +17,7 @@ export class Audit {
       const auditOptions: Array<string> = ['audit', '--severity', severityLevel]
 
       const isWindowsEnvironment: boolean = process.platform == 'win32'
-      const cmd: string = isWindowsEnvironment ? 'yarn npm.cmd' : 'yarn npm'
+      const cmd: string = isWindowsEnvironment ? 'npm.cmd' : 'npm'
 
       if (productionFlag === 'true') {
         auditOptions.push('--environment=production')
@@ -31,10 +31,14 @@ export class Audit {
         auditOptions.push('--recursive')
       }
 
-      const result: SpawnSyncReturns<string> = spawnSync(cmd, auditOptions, {
-        encoding: 'utf-8',
-        maxBuffer: SPAWN_PROCESS_BUFFER_SIZE
-      })
+      const result: SpawnSyncReturns<string> = spawnSync(
+        'yarn',
+        [cmd, ...auditOptions],
+        {
+          encoding: 'utf-8',
+          maxBuffer: SPAWN_PROCESS_BUFFER_SIZE
+        }
+      )
 
       if (result.error) {
         throw result.error

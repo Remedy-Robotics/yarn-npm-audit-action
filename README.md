@@ -60,9 +60,9 @@ jobs:
     name: npm audit
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: install dependencies
-        run: yarn install
+        run: corepack enable && yarn install
       - uses: Remedy-Robotics/yarn-npm-audit-action@v2
         with:
           severity_level: moderate
